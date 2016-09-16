@@ -105,3 +105,8 @@ def rulesFromConseq(freqSet, H, supportData, br1, minConf=0.7):
         Hmp1 = calcConf(freqSet, Hmp1, supportData, br1, minConf)
         if len(Hmp1) > 1:
             rulesFromConseq(freqSet, Hmp1, supportData, br1, minConf)
+
+
+if __name__ == '__main__':
+    # example 1
+    

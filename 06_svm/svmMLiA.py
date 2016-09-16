@@ -1,10 +1,6 @@
-'''
-Created on Nov 4, 2010
-Chapter 5 source file for Machine Learing in Action
-@author: Peter
-'''
 from numpy import *
 from time import sleep
+
 
 def loadDataSet(fileName):
     dataMat = []; labelMat = []
@@ -15,18 +11,21 @@ def loadDataSet(fileName):
         labelMat.append(float(lineArr[2]))
     return dataMat,labelMat
 
-def selectJrand(i,m):
-    j=i #we want to select any J not equal to i
-    while (j==i):
-        j = int(random.uniform(0,m))
+
+def selectJrand(i, m):
+    j = i #we want to select any J not equal to i
+    while (j == i):
+        j = int(random.uniform(0, m))
     return j
 
-def clipAlpha(aj,H,L):
+
+def clipAlpha(aj, H, L):
     if aj > H: 
         aj = H
     if L > aj:
         aj = L
     return aj
+
 
 def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
     dataMatrix = mat(dataMatIn); labelMat = mat(classLabels).transpose()
@@ -69,17 +68,19 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
         print "iteration number: %d" % iter
     return b,alphas
 
+
 def kernelTrans(X, A, kTup): #calc the kernel or transform data to a higher dimensional space
     m,n = shape(X)
-    K = mat(zeros((m,1)))
-    if kTup[0]=='lin': K = X * A.T   #linear kernel
+    K = mat(zeros((m, 1)))
+    if kTup[0]=='lin':
+        K = X * A.T   #linear kernel
     elif kTup[0]=='rbf':
         for j in range(m):
             deltaRow = X[j,:] - A
             K[j] = deltaRow*deltaRow.T
         K = exp(K/(-1*kTup[1]**2)) #divide in NumPy is element-wise not matrix like Matlab
-    else: raise NameError('Houston We Have a Problem -- \
-    That Kernel is not recognized')
+    else: 
+        raise NameError('Houston We Have a Problem -- That Kernel is not recognized')
     return K
 
 class optStruct:
@@ -95,11 +96,13 @@ class optStruct:
         self.K = mat(zeros((self.m,self.m)))
         for i in range(self.m):
             self.K[:,i] = kernelTrans(self.X, self.X[i,:], kTup)
-        
+
+      
 def calcEk(oS, k):
     fXk = float(multiply(oS.alphas,oS.labelMat).T*oS.K[:,k] + oS.b)
     Ek = fXk - float(oS.labelMat[k])
     return Ek
+
         
 def selectJ(i, oS, Ei):         #this is the second choice -heurstic, and calcs Ej
     maxK = -1; maxDeltaE = 0; Ej = 0
@@ -118,10 +121,12 @@ def selectJ(i, oS, Ei):         #this is the second choice -heurstic, and calcs 
         Ej = calcEk(oS, j)
     return j, Ej
 
+
 def updateEk(oS, k):#after any alpha has changed update the new value in the cache
     Ek = calcEk(oS, k)
     oS.eCache[k] = [1,Ek]
-        
+
+
 def innerL(i, oS):
     Ei = calcEk(oS, i)
     if ((oS.labelMat[i]*Ei < -oS.tol) and (oS.alphas[i] < oS.C)) or ((oS.labelMat[i]*Ei > oS.tol) and (oS.alphas[i] > 0)):
@@ -144,11 +149,16 @@ def innerL(i, oS):
         updateEk(oS, i) #added this for the Ecache                    #the update is in the oppostie direction
         b1 = oS.b - Ei- oS.labelMat[i]*(oS.alphas[i]-alphaIold)*oS.K[i,i] - oS.labelMat[j]*(oS.alphas[j]-alphaJold)*oS.K[i,j]
         b2 = oS.b - Ej- oS.labelMat[i]*(oS.alphas[i]-alphaIold)*oS.K[i,j]- oS.labelMat[j]*(oS.alphas[j]-alphaJold)*oS.K[j,j]
-        if (0 < oS.alphas[i]) and (oS.C > oS.alphas[i]): oS.b = b1
-        elif (0 < oS.alphas[j]) and (oS.C > oS.alphas[j]): oS.b = b2
-        else: oS.b = (b1 + b2)/2.0
+        if (0 < oS.alphas[i]) and (oS.C > oS.alphas[i]):
+            oS.b = b1
+        elif (0 < oS.alphas[j]) and (oS.C > oS.alphas[j]):
+            oS.b = b2
+        else:
+            oS.b = (b1 + b2)/2.0
         return 1
-    else: return 0
+    else:
+        return 0
+
 
 def smoP(dataMatIn, classLabels, C, toler, maxIter,kTup=('lin', 0)):    #full Platt SMO
     oS = optStruct(mat(dataMatIn),mat(classLabels).transpose(),C,toler, kTup)
@@ -172,6 +182,7 @@ def smoP(dataMatIn, classLabels, C, toler, maxIter,kTup=('lin', 0)):    #full Pl
         print "iteration number: %d" % iter
     return oS.b,oS.alphas
 
+
 def calcWs(alphas,dataArr,classLabels):
     X = mat(dataArr); labelMat = mat(classLabels).transpose()
     m,n = shape(X)
@@ -179,6 +190,7 @@ def calcWs(alphas,dataArr,classLabels):
     for i in range(m):
         w += multiply(alphas[i]*labelMat[i],X[i,:].T)
     return w
+
 
 def testRbf(k1=1.3):
     dataArr,labelArr = loadDataSet('testSetRBF.txt')
@@ -204,7 +216,8 @@ def testRbf(k1=1.3):
         predict=kernelEval.T * multiply(labelSV,alphas[svInd]) + b
         if sign(predict)!=sign(labelArr[i]): errorCount += 1    
     print "the test error rate is: %f" % (float(errorCount)/m)    
-    
+
+   
 def img2vector(filename):
     returnVect = zeros((1,1024))
     fr = open(filename)
@@ -213,6 +226,7 @@ def img2vector(filename):
         for j in range(32):
             returnVect[0,32*i+j] = int(lineStr[j])
     return returnVect
+
 
 def loadImages(dirName):
     from os import listdir
@@ -228,6 +242,7 @@ def loadImages(dirName):
         else: hwLabels.append(1)
         trainingMat[i,:] = img2vector('%s/%s' % (dirName, fileNameStr))
     return trainingMat, hwLabels    
+
 
 def testDigits(kTup=('rbf', 10)):
     dataArr,labelArr = loadImages('trainingDigits')
@@ -255,9 +270,9 @@ def testDigits(kTup=('rbf', 10)):
     print "the test error rate is: %f" % (float(errorCount)/m) 
 
 
-'''#######********************************
-Non-Kernel VErsions below
-'''#######********************************
+#######********************************
+#Non-Kernel VErsions below
+#######********************************
 
 class optStructK:
     def __init__(self,dataMatIn, classLabels, C, toler):  # Initialize the structure with the parameters 
@@ -269,11 +284,13 @@ class optStructK:
         self.alphas = mat(zeros((self.m,1)))
         self.b = 0
         self.eCache = mat(zeros((self.m,2))) #first column is valid flag
-        
+
+
 def calcEkK(oS, k):
     fXk = float(multiply(oS.alphas,oS.labelMat).T*(oS.X*oS.X[k,:].T)) + oS.b
     Ek = fXk - float(oS.labelMat[k])
     return Ek
+
         
 def selectJK(i, oS, Ei):         #this is the second choice -heurstic, and calcs Ej
     maxK = -1; maxDeltaE = 0; Ej = 0
@@ -292,9 +309,11 @@ def selectJK(i, oS, Ei):         #this is the second choice -heurstic, and calcs
         Ej = calcEk(oS, j)
     return j, Ej
 
+
 def updateEkK(oS, k):#after any alpha has changed update the new value in the cache
     Ek = calcEk(oS, k)
     oS.eCache[k] = [1,Ek]
+
         
 def innerLK(i, oS):
     Ei = calcEk(oS, i)
@@ -322,7 +341,9 @@ def innerLK(i, oS):
         elif (0 < oS.alphas[j]) and (oS.C > oS.alphas[j]): oS.b = b2
         else: oS.b = (b1 + b2)/2.0
         return 1
-    else: return 0
+    else:
+        return 0
+
 
 def smoPK(dataMatIn, classLabels, C, toler, maxIter):    #full Platt SMO
     oS = optStruct(mat(dataMatIn),mat(classLabels).transpose(),C,toler)
@@ -345,3 +366,8 @@ def smoPK(dataMatIn, classLabels, C, toler, maxIter):    #full Platt SMO
         elif (alphaPairsChanged == 0): entireSet = True  
         print "iteration number: %d" % iter
     return oS.b,oS.alphas
+
+
+if __name__ == '__main__':
+    # example 1
+    

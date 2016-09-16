@@ -1,7 +1,9 @@
 import operator
 from math import log
 import pdb
+import pickle
 from treePlotter import createPlot
+
 
 def calcShannonEnt(dataSet):
     """
@@ -102,20 +104,20 @@ def createTree(dataSet, labels):
         myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet, bestFeat, value), subLabels)
     return myTree
 
+
 def storeTree(inputTree, filename):
     """
     store tree with pickle
     """
-    import pickle
     fw = open(filename, 'w')
     pickle.dump(inputTree, fw)
     fw.close()
+
 
 def grabTree(filename):
     """
     recover tree from pickled file
     """
-    import pickle
     fr = open(filename)
     return pickle.load(fr)
 

@@ -110,3 +110,8 @@ def mineTree(inTree, headerTable, minSup, preFix, freqItemList):
             print 'conditional tree for: ', newFreqSet
             myCondTree.disp(1)
             mineTree(myCondTree, myHead, minSup, newFreqSet, freqItemList)
+
+
+if __name__ == '__main__':
+    # example 1
+    
