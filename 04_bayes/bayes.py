@@ -141,7 +141,7 @@ def calcMostFreq(vocabList, fullText):
     for token in vocabList:
         freqDict[token] = fullText.count(token)
     sortedFeq = sorted(freqDict.iteritems(), key=operator.itemgetter(1),\
-                    reversed=True)
+                    reverse=True)
     return sortedFeq[:30]
 
 
@@ -189,7 +189,7 @@ def getTopWords(ny, sf):
             topSF.append((vocabList[i], p0V[i]))
         if p1V[i] > -6.0:
             topNY.append((vocabList[i], p0V[i]))
-    sortedSF = sorted(topSF, key=lambda pair: pair[1], reversed=True)
+    sortedSF = sorted(topSF, key=lambda pair: pair[1], reverse=True)
     sortedSF = sorted(topSF, key=lambda pair: pair[1], reverse=True)
     print "SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**SF**"
     for item in sortedSF:

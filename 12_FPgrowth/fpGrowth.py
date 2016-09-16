@@ -114,4 +114,18 @@ def mineTree(inTree, headerTable, minSup, preFix, freqItemList):
 
 if __name__ == '__main__':
     # example 1
+    # simpDat = loadSimpDat()
+    # initSet = createInitSet(simpDat)
+    # myFPtree, myHeaderTab = createTree(initSet, 3)
+    # myFPtree.disp()
+    # feqItems = []
+    # mineTree(myFPtree, myHeaderTab, 3, set([]), feqItems)
+    # print feqItems
+    # example 3
+    parsedDat = [line.split() for line in open('kosarak.dat').readlines()]
+    initSet = createInitSet(parsedDat)
+    myFPtree, myHeaderTab = createTree(initSet, 100000)
+    myFreqList = []
+    mineTree(myFPtree, myHeaderTab, 100000, set([]), myFreqList)
+    print myFreqList
     

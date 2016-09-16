@@ -3,7 +3,8 @@ import operator
 import matplotlib
 import matplotlib.pyplot as plt
 import pdb
-
+from votesmart import votesmart
+from time import sleep
 
 def loadDataSet():
     return [[1, 3, 4],
@@ -23,6 +24,9 @@ def createC1(dataSet):
 
 
 def scanD(D, Ck, minSupport):
+    """
+    filter items whose support is greater than minSupport
+    """
     ssCnt = {}
     for tid in D:
         for can in Ck:
@@ -44,7 +48,7 @@ def scanD(D, Ck, minSupport):
 
 def aprioriGen(Lk, k):
     """
-    creates Ck
+    creates Ck from Ck-1
     """
     retList = []
     lenLk = len(Lk)
@@ -56,6 +60,7 @@ def aprioriGen(Lk, k):
             L1.sort()
             L2.sort()
             if L1 == L2:
+                # L1 and L2 have common prefix
                 retList.append(Lk[i] | Lk[j])
     return retList
 
@@ -100,7 +105,9 @@ def calcConf(freqSet, H, supportData, br1, minConf=0.7):
 
 def rulesFromConseq(freqSet, H, supportData, br1, minConf=0.7):
     m = len(H[0])
+    # try further merging
     if len(freqSet) > (m + 1):
+        # create hm + 1 new candicates
         Hmp1 = aprioriGen(H, m + 1)
         Hmp1 = calcConf(freqSet, Hmp1, supportData, br1, minConf)
         if len(Hmp1) > 1:
@@ -109,4 +116,14 @@ def rulesFromConseq(freqSet, H, supportData, br1, minConf=0.7):
 
 if __name__ == '__main__':
     # example 1
+    # dataSet = loadDataSet()
+    # L, supportData = apriori(dataSet, minSupport=0.5)
+    # print L, supportData
+    # rules = generateRules(L, supportData, minConf=0.7)
+    # example 3
+    mushDataSet = [line.split() for line in open('mushroom.dat').readlines()]
+    L, supportData = apriori(mushDataSet, minSupport=0.3)
+    rules = generateRules(L, supportData, minConf=0.7)
+    # print L
+    print rules
     
