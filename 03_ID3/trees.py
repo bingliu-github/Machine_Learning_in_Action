@@ -7,10 +7,11 @@ from treePlotter import createPlot
 
 def calcShannonEnt(dataSet):
     """
-    compute entropy of a dataset
+    compute entropy of label (-1) in dataSet
     """
     numEntries = len(dataSet)
     labelCounts = {}
+    # compute frequency
     for featVec in dataSet:
         currentLabel = featVec[-1]
         # labelCounts[currentLabel] = labelCounts.get(currentLabel, 0) + 1
@@ -18,6 +19,7 @@ def calcShannonEnt(dataSet):
             labelCounts[currentLabel] = 0
         labelCounts[currentLabel] += 1
     shannonEnt = 0.0
+    # shannon distance
     for key in labelCounts:
         prob = float(labelCounts[key]) / numEntries
         shannonEnt -= prob * log(prob, 2)
@@ -36,7 +38,12 @@ def createDataSet():
 
 def splitDataSet(dataSet, axis, value):
     """
-    split dataset on a given feature
+    extract sub-dataset on a given feature and value.
+    After split, the feature will be removed
+
+    dataSet: a given dataset
+    axis: a given feature
+    value: a given value on axis to extract dataset
     """
     retDataSet = []
     for featVec in dataSet:
@@ -56,10 +63,13 @@ def chooseBestFeatureToSplit(dataSet):
     bestInfoGain = 0.0
     bestFeature = -1
     for i in range(numFeatures):
+        # compute entropy for each feature
         featList = [example[i] for example in dataSet]
+        # remove duplicate
         uniqueVals = set(featList)
         newEntropy = 0.0
-        # compute entropy for each feature
+        # spliting the dataset on this feature
+        # based on value on this feature
         for value in uniqueVals:
             subDataSet = splitDataSet(dataSet, i, value)
             prob = len(subDataSet) / float(len(dataSet))
@@ -97,10 +107,13 @@ def createTree(dataSet, labels):
     bestFeatLabel = labels[bestFeat]
     myTree = {bestFeatLabel: {}}
     del(labels[bestFeat])
+    # all possible values in this feature
     featValues = [example[bestFeat] for example in dataSet]
     uniqueVals = set(featValues)
+    # split dataset based on values
     for value in uniqueVals:
         subLabels = labels[:]
+        # recursively split
         myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet, bestFeat, value), subLabels)
     return myTree
 
@@ -125,6 +138,10 @@ def grabTree(filename):
 def classify(inputTree, featLabels, testVec):
     """
     use ID3 to classiy dataset
+
+    inputTree: pre-generated decision tree
+    featLabels: labels
+    testVec: test dataset
     """
     firstStr = inputTree.keys()[0]
     secondDict = inputTree[firstStr]

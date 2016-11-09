@@ -17,6 +17,10 @@ def createDataSet():
 def classify0(inX, dataSet, labels, k):
     """
     k-nn clasification
+
+    inX: the input vector to classify, e.g. [1, 2, 3]
+    dataSet: full matrix of training examples
+    labels: a vector of labels
     """
     dataSetSize = dataSet.shape[0]
     # compute distances
@@ -33,7 +37,7 @@ def classify0(inX, dataSet, labels, k):
     for i in range(k):
         voteIlabel = labels[sortedDistIndicies[i]]
         classCount[voteIlabel] = classCount.get(voteIlabel, 0) + 1
-    # sort on dict.iteritems by [1] 
+    # sort on dict.iteritems by [1]
     sortedClassCount = sorted(classCount.iteritems(),
                               key=operator.itemgetter(1), reverse=True)
     return sortedClassCount[0][0]
@@ -107,6 +111,7 @@ def img2vector(filename):
             returnVect[0, 32 * i + j] = int(lineStr[j])
     return returnVect
 
+
 def handwritingClassTest():
     """
     knn on digits
@@ -120,7 +125,7 @@ def handwritingClassTest():
         fileStr = fileNameStr.split('.')[0]
         classNumStr = int(fileStr.split('_')[0])
         hwLabels.append(classNumStr)
-        trainMat[i,:] = img2vector('trainingDigits/%s' % fileNameStr)    
+        trainMat[i, :] = img2vector('trainingDigits/%s' % fileNameStr)
     testFileList = listdir('testDigits')
     errorCount = 0.0
     mTest = len(testFileList)
@@ -131,7 +136,7 @@ def handwritingClassTest():
         vectorUnderTest = img2vector('testDigits/%s' % fileNameStr)
         classifierResult = classify0(vectorUnderTest, trainMat, hwLabels, 3)
         print "the classifier came back with: %d, the real answer is: %d"\
-                                % (classifierResult, classNumStr)
+            % (classifierResult, classNumStr)
         if classifierResult != classNumStr:
             errorCount += 1.0
     print "the total error rate is: %f" % (errorCount / float(mTest))
@@ -157,8 +162,7 @@ if __name__ == '__main__':
     # group, labels = createDataSet()
     # print classify0([0, 0], group, labels, 3)
     # example 2
-    # datingDataMat, datingLabels = file2matrix('datingTestSet2.txt')
-    # plot_result(datingDataMat, datingLabels)
-    
-    dataingClassTest()
-    handwritingClassTest()
+    datingDataMat, datingLabels = file2matrix('datingTestSet2.txt')
+    plot_result(datingDataMat, datingLabels)
+    # dataingClassTest()
+    # handwritingClassTest()

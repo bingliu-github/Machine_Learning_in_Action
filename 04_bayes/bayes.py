@@ -4,6 +4,7 @@ import random
 import feedparser
 import operator
 
+
 def loadDataSet():
     """
     generate test dataset and labels
@@ -70,6 +71,7 @@ def trainNB0(trainMatrix, trainCategory):
 def classifyNB(vec2Classify, p0Vec, p1Vec, pClass1):
     p1 = sum(vec2Classify * p1Vec) + log(pClass1)
     p0 = sum(vec2Classify * p0Vec) + log(1.0 - pClass1)
+    # compute two probabilities
     if p1 > p0:
         return 1
     else:
@@ -140,8 +142,8 @@ def calcMostFreq(vocabList, fullText):
     freqDict = {}
     for token in vocabList:
         freqDict[token] = fullText.count(token)
-    sortedFeq = sorted(freqDict.iteritems(), key=operator.itemgetter(1),\
-                    reverse=True)
+    sortedFeq = sorted(freqDict.iteritems(), key=operator.itemgetter(1),
+                       reverse=True)
     return sortedFeq[:30]
 
 
@@ -206,10 +208,7 @@ if __name__ == '__main__':
     # example 2
     # spamTest()
     # example 3
-    ny = feedparser.parse('http://newyork.craigslist.org/stp/index.rss')
-    sf = feedparser.parse('http://sfbay.craigslist.org/stp/index.rss')
-    localWords(ny, sf)
-    getTopWords(ny, sf)
-
-
-    
+    # ny = feedparser.parse('http://newyork.craigslist.org/stp/index.rss')
+    # sf = feedparser.parse('http://sfbay.craigslist.org/stp/index.rss')
+    # localWords(ny, sf)
+    # getTopWords(ny, sf)
